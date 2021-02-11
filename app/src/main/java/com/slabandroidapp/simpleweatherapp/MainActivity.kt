@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.slabandroidapp.simpleweatherapp
 
 import android.Manifest
@@ -134,11 +136,11 @@ class MainActivity : AppCompatActivity() {
             val descPref = preferences.getString("desc", "")
             val addressPref = preferences.getString("address", "")
 
-            binding.temp.setText(tempPref)
-            binding.countaryTxt.setText(countryPref)
-            binding.cityName.setText(cityPref)
-            binding.tempDescribe.setText(descPref)
-            binding.locTxt.setText(addressPref)
+            binding.temp.text = tempPref
+            binding.countaryTxt.text = countryPref
+            binding.cityName.text = cityPref
+            binding.tempDescribe.text = descPref
+            binding.locTxt.text = addressPref
             loadAnimationApp()
 
         }
@@ -194,18 +196,18 @@ class MainActivity : AppCompatActivity() {
             try {
                 mDialog.dismiss()
                 // Getting Data
-                var objectJs: JSONObject = response.getJSONObject("main")
-                var temperature: String = objectJs.getString("temp")
-                var temp = temperature.toDouble() - 273.15
+                val objectJs: JSONObject = response.getJSONObject("main")
+                val temperature: String = objectJs.getString("temp")
+                val temp = temperature.toDouble() - 273.15
                 val nameCity: String = response.getString("name")
-                binding.temp.setText(temp.toString().substring(0, 5) + "°C")
+                binding.temp.text = temp.toString().substring(0, 5) + "°C"
                 val arrayDes: JSONArray = response.getJSONArray("weather")
                 val objectDes: JSONObject = arrayDes.getJSONObject(0)
                 val describe: String = objectDes.getString("description")
-                binding.countaryTxt.setText(countryName)
-                binding.tempDescribe.setText(describe)
-                binding.cityName.setText(nameCity)
-                binding.locTxt.setText(addressLine)
+                binding.countaryTxt.text = countryName
+                binding.tempDescribe.text = describe
+                binding.cityName.text = nameCity
+                binding.locTxt.text = addressLine
                 // Storing in Shared Preference
                 val preferences = getSharedPreferences("WeatherPref", MODE_PRIVATE)
                 val editor = preferences.edit()
@@ -238,7 +240,7 @@ class MainActivity : AppCompatActivity() {
         queue.add(request)
     }
 
-    fun showSettingsAlert() {
+    private fun showSettingsAlert() {
         val alertDialog = AlertDialog.Builder(this)
 
         //Setting Dialog Title
@@ -250,19 +252,19 @@ class MainActivity : AppCompatActivity() {
 
         //On Pressing Setting button
         alertDialog.setPositiveButton("Settings",
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, _ ->
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             })
 
         //On pressing cancel button
         alertDialog.setNegativeButton(R.string.cancel,
-            DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+            DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
         alertDialog.show()
     }
 
     private fun checkLocationPermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(
+        return if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
@@ -271,10 +273,10 @@ class MainActivity : AppCompatActivity() {
                 this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                 MY_PERMISSION_ACCESS_COURSE_LOCATION
             )
-            return false
+            false
         } else {
             Toast.makeText(applicationContext, "Location On", Toast.LENGTH_SHORT).show()
-            return true
+            true
         }
     }
 }
