@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
             else
             {
+                preferenceMethod()
                 // can't get location
                 // GPS or Network is not enabled
                 // Ask user to enable GPS/network in settings
@@ -63,11 +64,11 @@ class MainActivity : AppCompatActivity() {
                 binding.cardView.isVisible = true
                 loadData()  // Load in Card View
                 // Animation
-                val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
-                binding.cardView.startAnimation(animation)
+                loadAnimationApp()
             }
             else
             {
+                preferenceMethod()
                 checkLocationPermission()
             }
         }
@@ -76,30 +77,7 @@ class MainActivity : AppCompatActivity() {
             binding.connection.isVisible = true
             binding.cardView.isVisible = false
             // Retrieving Data from Shared Preference When no internet to display
-            val preferences = getSharedPreferences("WeatherPref", MODE_PRIVATE)
-            val code = preferences.getString("remember", "")
-            if (code == "true")
-            {
-                binding.connection.isVisible = false
-                binding.cardView.isVisible = true
-                val tempPref = preferences.getString("temp", "")
-                val countryPref = preferences.getString("country", "")
-                val cityPref = preferences.getString("city", "")
-                val descPref = preferences.getString("desc", "")
-                val addressPref = preferences.getString("address", "")
-
-                binding.temp.setText(tempPref)
-                binding.countaryTxt.setText(countryPref)
-                binding.cityName.setText(cityPref)
-                binding.tempDescribe.setText(descPref)
-                binding.locTxt.setText(addressPref)
-                val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
-                binding.cardView.startAnimation(animation)
-            }
-            else if (code == "false")
-            {
-                Toast.makeText(this, "No Data Stored in Pref", Toast.LENGTH_SHORT).show()
-            }
+            preferenceMethod()
         }
 
         // Swipe Refresh to load Data Again
@@ -123,8 +101,7 @@ class MainActivity : AppCompatActivity() {
                     binding.connection.isVisible = false
                     binding.cardView.isVisible = true
                     loadData()
-                    val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
-                    binding.cardView.startAnimation(animation)
+                    loadAnimationApp()
                 }
                 else
                 {
@@ -135,37 +112,47 @@ class MainActivity : AppCompatActivity() {
             {
                 binding.connection.isVisible = true
                 binding.cardView.isVisible = false
-                val preferences = getSharedPreferences("WeatherPref", MODE_PRIVATE)
-                val code = preferences.getString("remember", "")
-                if (code == "true")
-                {
-                    binding.connection.isVisible = false
-                    binding.cardView.isVisible = true
-                    val tempPref = preferences.getString("temp", "")
-                    val countryPref = preferences.getString("country", "")
-                    val cityPref = preferences.getString("city", "")
-                    val descPref = preferences.getString("desc", "")
-                    val addressPref = preferences.getString("address", "")
+                preferenceMethod()
 
-                    binding.temp.setText(tempPref)
-                    binding.countaryTxt.setText(countryPref)
-                    binding.cityName.setText(cityPref)
-                    binding.tempDescribe.setText(descPref)
-                    binding.locTxt.setText(addressPref)
-                    val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
-                    binding.cardView.startAnimation(animation)
-
-                }
-                else if (code == "false")
-                {
-                    Toast.makeText(this, "No Data Stored in Pref", Toast.LENGTH_SHORT).show()
-                }
             }
 
             binding.pullToRefresh.isRefreshing = false
         }
 
     }
+
+    private fun preferenceMethod() {
+        val preferences = getSharedPreferences("WeatherPref", MODE_PRIVATE)
+        val code = preferences.getString("remember", "")
+        if (code == "true")
+        {
+            binding.connection.isVisible = false
+            binding.cardView.isVisible = true
+            val tempPref = preferences.getString("temp", "")
+            val countryPref = preferences.getString("country", "")
+            val cityPref = preferences.getString("city", "")
+            val descPref = preferences.getString("desc", "")
+            val addressPref = preferences.getString("address", "")
+
+            binding.temp.setText(tempPref)
+            binding.countaryTxt.setText(countryPref)
+            binding.cityName.setText(cityPref)
+            binding.tempDescribe.setText(descPref)
+            binding.locTxt.setText(addressPref)
+            loadAnimationApp()
+
+        }
+        else if (code == "false")
+        {
+            Toast.makeText(this, "No Data Stored in Pref", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadAnimationApp() {
+        val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
+        binding.cardView.startAnimation(animation)
+    }
+
 
     // Network Checking
     private fun isNetworkConnected(): Boolean {
