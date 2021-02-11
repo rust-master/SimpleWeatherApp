@@ -21,7 +21,7 @@ class SplashActivity : AppCompatActivity() {
                 intent = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(intent)
                 finish()
-            }, 1000)
+            }, 1500)
 
     }
 
