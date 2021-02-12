@@ -10,11 +10,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.provider.Settings
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +30,7 @@ import com.slabandroidapp.simpleweatherapp.databinding.ActivityMainBinding
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,34 +49,31 @@ class MainActivity : AppCompatActivity() {
 
         if (isNetworkConnected())  // Internet Connection Checking
         {
-            gpsTracker = GPSTracker(applicationContext)
-            if (gpsTracker!!.getIsGPSTrackingEnabled()) // Checking GPS/network in settings
-            {
-                check = checkLocationPermission() // Check and Ask for App Permission Location to Allow
-            }
-            else
-            {
-                preferenceMethod()
-                // can't get location
-                // GPS or Network is not enabled
-                // Ask user to enable GPS/network in settings
-                showSettingsAlert()
-            }
-            if (check) {
-                binding.connection.isVisible = false
-                binding.cardView.isVisible = true
-                loadData()  // Load in Card View
-                // Animation
-                loadAnimationApp()
-            }
-            else
-            {
-                preferenceMethod()
-                checkLocationPermission()
-            }
-        }
-        else
-        {
+
+                gpsTracker = GPSTracker(applicationContext)
+                if (gpsTracker!!.getIsGPSTrackingEnabled()) // Checking GPS/network in settings
+                {
+                    check =
+                        checkLocationPermission() // Check and Ask for App Permission Location to Allow
+                } else {
+                    preferenceMethod()
+                    // can't get location
+                    // GPS or Network is not enabled
+                    // Ask user to enable GPS/network in settings
+                    showSettingsAlert()
+                }
+                if (check) {
+                    binding.connection.isVisible = false
+                    binding.cardView.isVisible = true
+                    loadData()  // Load in Card View
+                    // Animation
+                    loadAnimationApp()
+                } else {
+                    preferenceMethod()
+                    checkLocationPermission()
+                }
+
+        } else {
             binding.connection.isVisible = true
             binding.cardView.isVisible = false
             // Retrieving Data from Shared Preference When no internet to display
@@ -85,39 +83,31 @@ class MainActivity : AppCompatActivity() {
         // Swipe Refresh to load Data Again
         binding.pullToRefresh.setOnRefreshListener {
 
-            if (isNetworkConnected())
-            {
-                gpsTracker = GPSTracker(applicationContext)
-                if (gpsTracker!!.getIsGPSTrackingEnabled())
-                {
-                    check = checkLocationPermission()
-                }
-                else
-                {
-                    // can't get location
-                    // GPS or Network is not enabled
-                    // Ask user to enable GPS/network in settings
-                    showSettingsAlert()
-                }
-                if (check) {
-                    binding.connection.isVisible = false
-                    binding.cardView.isVisible = true
-                    loadData()
-                    loadAnimationApp()
-                }
-                else
-                {
-                    checkLocationPermission()
-                }
-            }
-            else
-            {
+            if (isNetworkConnected()) {
+
+                    gpsTracker = GPSTracker(applicationContext)
+                    if (gpsTracker!!.getIsGPSTrackingEnabled()) {
+                        check = checkLocationPermission()
+                    } else {
+                        // can't get location
+                        // GPS or Network is not enabled
+                        // Ask user to enable GPS/network in settings
+                        showSettingsAlert()
+                    }
+                    if (check) {
+                        binding.connection.isVisible = false
+                        binding.cardView.isVisible = true
+                        loadData()
+                        loadAnimationApp()
+                    } else {
+                        checkLocationPermission()
+                    }
+
+            } else {
                 binding.connection.isVisible = true
                 binding.cardView.isVisible = false
                 preferenceMethod()
-
             }
-
             binding.pullToRefresh.isRefreshing = false
         }
 
@@ -126,8 +116,7 @@ class MainActivity : AppCompatActivity() {
     private fun preferenceMethod() {
         val preferences = getSharedPreferences("WeatherPref", MODE_PRIVATE)
         val code = preferences.getString("remember", "")
-        if (code == "true")
-        {
+        if (code == "true") {
             binding.connection.isVisible = false
             binding.cardView.isVisible = true
             val tempPref = preferences.getString("temp", "")
@@ -143,23 +132,22 @@ class MainActivity : AppCompatActivity() {
             binding.locTxt.text = addressPref
             loadAnimationApp()
 
-        }
-        else if (code == "false")
-        {
+        } else if (code == "false") {
             Toast.makeText(this, "No Data Stored in Pref", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun loadAnimationApp() {
-        val animation: Animation = AnimationUtils.loadAnimation(this,R.anim.slide_in_left)
+        val animation: Animation = AnimationUtils.loadAnimation(this, R.anim.slide_in_left)
         binding.cardView.startAnimation(animation)
     }
 
 
     // Network Checking
     private fun isNetworkConnected(): Boolean {
-        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return cm.activeNetworkInfo != null && cm.activeNetworkInfo.isConnected
+        val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        return activeNetwork?.isConnectedOrConnecting == true
     }
 
     // Calling API, Getting Data, Loading in Screen and Storing in the Shared Preference
@@ -189,7 +177,8 @@ class MainActivity : AppCompatActivity() {
             showSettingsAlert()
         }
         val API_KEY = "1b64d48d618d9d9760b14d524944668d" // API key from Open Weather Map Website
-        val webUrl = "https://api.openweathermap.org/data/2.5/weather?lat=$stringLatitude&lon=$stringLongitude&appid=$API_KEY"
+        val webUrl =
+            "https://api.openweathermap.org/data/2.5/weather?lat=$stringLatitude&lon=$stringLongitude&appid=$API_KEY"
         val queue: RequestQueue = Volley.newRequestQueue(applicationContext) // Volley Request
         // Json Object Request
         val request = JsonObjectRequest(Request.Method.GET, webUrl, null, { response ->
