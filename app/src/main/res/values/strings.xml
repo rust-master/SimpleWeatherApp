@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SimpleWeatherApp</string>
+    <string name="app_name">Simple Weather App</string>
     <string name="GPSAlertDialogMessage">Kindly Turn On The Location</string>
     <string name="GPSAlertDialogTitle">GPS Setting</string>
     <string name="action_settings">Settings</string>
