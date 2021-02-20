@@ -7,6 +7,26 @@
     android:background="@color/white"
     tools:context=".SplashActivity">
 
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/logo" />
+
+    <TextView
+        android:layout_below="@+id/logo"
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="Simple Weather App"
+        android:textColor="@color/mainColor"
+        android:textSize="25sp" />
 
 
     <LinearLayout
@@ -14,22 +34,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/logo" />
-        <TextView
-            android:id="@+id/appName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/ubuntu_bold"
-            android:text="Simple Weather App"
-            android:textColor="@color/mainColor"
-            android:textSize="25sp" />
 
         <ProgressBar
             android:layout_marginTop="40dp"
